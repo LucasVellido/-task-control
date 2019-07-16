@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="pt" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Gerenciador de Tarefas - listagem</title>
+    <link rel="stylesheet" href="/webjars/bootstrap/4.3.1/css/bootstrap.min.css">
+</head>
+<body>
+
+        <div th:replace="fragmentos/fragmentos :: cabecalho">
+        </div>
+        <div class="container">
+            <h3>Listagem de Tarefas</h3>
+
+            <a href="/tasks/insert" class="btn btn-success">Inserir nova tarefa</a>
+
+            <!-- Fazendo um for each -->
+            <div th:each="task: ${tasks}" style="margin-top: 10px;">
+                <div class="card bg-light mb-3">
+                    <!-- Pegando o titulo a partir do for each anterior-->
+                    <div class="card-header" th:text="${task.getTitle()}"></div>
+
+                    <div class="card-body">
+                        <!-- Pegando a descrição a partir do for each anterior-->
+                        <p class="card-text" th:text="${task.getDescription()}"></p>
+
+                        <!-- Mostrando a data formatada utilizando Helper(#) dates -->
+                        <p class="card-text" th:text="${'Data de expiração: ' + #dates.format(task.getExpirationDate(), 'dd/MM/yyyy')}"></p>
+                        <p class="card-text" style="color:green;" th:if="${task.expirationDate.after(new java.util.Date())}">Em dia</p>
+                        <p class="card-text" style="color:red;" th:if="${task.expirationDate.before(new java.util.Date())}">Atrasada</p>
+                    </div>
+                    <div class="card-footer bg-light">
+                        <p>
+                            <a th:href="@{/tasks/update/{id}(id=${task.id})}">Alterar</a> |
+                            <a th:href="@{/tasks/delete/{id}(id=${task.id})}">Excluir</a> |
+                            <a th:if="${!task.completed}" th:href="@{/tasks/complete/{id}(id=${task.id})}">Concluir</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script src="/webjars/jquery/3.4.1/jquery.min.js"> </script>
+        <script src="/webjars/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</body>
+</html>
